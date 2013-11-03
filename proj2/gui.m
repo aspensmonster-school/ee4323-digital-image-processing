@@ -91,14 +91,19 @@ function pushbutton_saveCurrent_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_saveCurrent (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+image = handles.imgcurr;
+save_image(image);
 
 % --- Executes on button press in pushbutton_makePreviewCurrent.
 function pushbutton_makePreviewCurrent_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_makePreviewCurrent (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+image = handles.imgprev;
+axes(handles.axes_current);
+imshow(image);
+handles.imgcurr=image;
+guidata(hObject,handles);
 
 % --- Executes on button press in pushbutton_lowPass.
 function pushbutton_lowPass_Callback(hObject, eventdata, handles)
@@ -106,7 +111,10 @@ function pushbutton_lowPass_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.axes_preview);
-imshow(smooth_n(handles.imgcurr,9));
+image = smooth_n(handles.imgcurr,9);
+imshow(image);
+handles.imgprev=image;
+%imshow(smooth_n(handles.imgcurr,9));
 guidata(hObject, handles);
 
 function [g]=smooth_n(f,n)
