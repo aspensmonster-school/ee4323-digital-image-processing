@@ -22,7 +22,7 @@ function varargout = gui(varargin)
 
 % Edit the above text to modify the response to help gui
 
-% Last Modified by GUIDE v2.5 02-Nov-2013 22:18:18
+% Last Modified by GUIDE v2.5 03-Nov-2013 16:44:24
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -111,7 +111,11 @@ function pushbutton_lowPass_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.axes_preview);
-image = smooth_n(handles.imgcurr,9);
+
+%selected = get(handles.uipanel_lowPassNeighboorhood,'SelectedObject');
+neighboorhood = get(get(handles.uipanel_lowPassNeighboorhood,'SelectedObject'),'UserData');
+
+image = smooth_n(handles.imgcurr,neighboorhood);
 imshow(image);
 handles.imgprev=image;
 %imshow(smooth_n(handles.imgcurr,9));
