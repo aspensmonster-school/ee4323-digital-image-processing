@@ -81,7 +81,7 @@ function pushbutton_selectCurrent_Callback(hObject, eventdata, handles)
 image = open_image;
 axes(handles.axes_current);
 imshow(image);
-handles.img=image;
+handles.imgcurr=image;
 guidata(hObject, handles);
 
 
@@ -105,7 +105,22 @@ function pushbutton_lowPass_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_lowPass (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+axes(handles.axes_preview);
+imshow(smooth_n(handles.imgcurr,9));
+guidata(hObject, handles);
 
+function [g]=smooth_n(f,n)
+[height width]=size(f);
+g=f;
+for row=1:height
+    for col=1:width
+        startrow=max(row-n,1);
+        endrow=min(row+n,height);
+        startcol=max(col-n,1);
+        endcol=min(col+n,width);
+        g(row,col)=mean(mean(f(startrow:endrow,startcol:endcol)));
+    end
+end
 
 % --- Executes on button press in pushbutton_highPass.
 function pushbutton_highPass_Callback(hObject, eventdata, handles)
