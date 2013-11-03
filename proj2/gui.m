@@ -78,7 +78,12 @@ function pushbutton_selectCurrent_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_selectCurrent (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-open_image;
+image = open_image;
+axes(handles.axes_current);
+imshow(image);
+handles.img=image;
+guidata(hObject, handles);
+
 
 
 % --- Executes on button press in pushbutton_saveCurrent.
