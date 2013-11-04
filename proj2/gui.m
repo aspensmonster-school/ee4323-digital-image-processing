@@ -140,7 +140,37 @@ function pushbutton_highPass_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+axes(handles.axes_preview);
+image = ideal_highpass_centered_freq(handles.imgcurr,5.0);
+imshow(image);
+handles.imgprev=image;
+guidata(hObject,handles);
 
+%high-pass filter
+function [output]=ideal_highpass_centered_freq(input,radius)
+%[output]=ideal_highpass_centered_frequency(input,radius)
+%input and output are fourier frequency components which have been centered for display
+height=size(input,1);
+width=size(input,2);
+distance=distance_from_center(height,width);
+
+filter=distance >= radius;
+output=input.*filter;
+
+%dist. from center
+function [distance]=distance_from_center(max_rows,max_columns)
+%[distance]=distance_from_center(max_rows,max_columns)
+%creates a 2-dimensional array of size max_rows by max_columns 
+%whose elements are the euclidean distances from the center coordinates.
+distance=zeros(max_rows,max_columns);
+center_row=fix(max_rows/2+.5);
+center_column=fix(max_columns/2+.5);
+
+for row=1:max_rows
+   for column=1:max_columns
+      distance(row,column)=sqrt((row-center_row).^2+(column-center_column).^2);
+   end
+end
 
 function edit_boostCoeff_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_boostCoeff (see GCBO)
@@ -176,8 +206,44 @@ function pushbutton_histogram_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_histogram (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+axes(handles.axes_preview);
+image = histequalize(handles.imgcurr);
+imshow(image);
+handles.imgprev=image;
+guidata(hObject,handles);
 
+% Shit below ain't workin' ; gotta adjust it for color images.
+% Protip: It _does_ work for grayscale images.
 
+function [g]=histequalize(f)
+h=histogram(f);
+[height,width]=size(f);
+newcolors=zeros(1,256);
+for k=1:256
+    for j=1:k
+        newcolors(k)=newcolors(k)+h(j);
+    end
+end
+newcolors=255*newcolors/(height*width);
+newcolors=uint8(newcolors);
+g=zeros(height,width);
+for r=1:height
+    for c=1:width
+        oldcolor=double(f(r,c));
+        g(r,c)=newcolors(oldcolor+1);
+    end
+end
+g=uint8(g);
+
+function [h]=histogram(f);
+ [xmax,ymax]=size(f);
+ h=zeros(1,256);
+ for x=1:xmax
+    for y=1:ymax
+        color=double(f(x,y));
+        h(color+1)=h(color+1)+1;
+    end;
+ end;
 
 function edit_brightness_step_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_brightness_step (see GCBO)
@@ -231,7 +297,22 @@ function edit_brightness_percent_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_brightness_percent as text
 %        str2double(get(hObject,'String')) returns contents of edit_brightness_percent as a double
+axes(handles.axes_preview);
+image = handles.imgcurr;
 
+percent = get(handles.edit_brightness_percent,'String');
+percent = str2double(percent);
+percent = percent/100;
+
+if(percent >= 0)
+    image2 = imadjust(image,[0 1],[percent 1]);
+else
+    percent = percent*(-1);
+    image2 = imadjust(image,[0,1],[0 (1-percent)]);
+end
+imshow(image2);
+handles.imgprev=image2;
+guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit_brightness_percent_CreateFcn(hObject, eventdata, handles)
@@ -299,7 +380,22 @@ function edit_contrast_percent_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_contrast_percent as text
 %        str2double(get(hObject,'String')) returns contents of edit_contrast_percent as a double
+axes(handles.axes_preview);
+image = handles.imgcurr;
 
+percent = get(handles.edit_contrast_percent,'String');
+percent = str2double(percent);
+percent = percent/100;
+
+if(percent >= 0)
+    image2 = imadjust(image,[0 (1-percent)],[0 1]);
+else
+    percent = percent*(-1);
+    image2 = imadjust(image,[percent 1],[0 1]);
+end
+imshow(image2);
+handles.imgprev=image2;
+guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
 function edit_contrast_percent_CreateFcn(hObject, eventdata, handles)
