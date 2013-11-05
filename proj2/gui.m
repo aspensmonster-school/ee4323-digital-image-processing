@@ -199,7 +199,12 @@ function pushbutton_highBoost_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_highBoost (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+axes(handles.axes_preview);
+image = handles.imgcurr;
+image = imfilter(imsubtract(image,25),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
+imshow(image);
+handles.imgprev = image;
+guidata(hObject,handles);
 
 % --- Executes on button press in pushbutton_histogram.
 function pushbutton_histogram_Callback(hObject, eventdata, handles)
