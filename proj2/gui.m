@@ -141,36 +141,12 @@ function pushbutton_highPass_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 axes(handles.axes_preview);
-image = ideal_highpass_centered_freq(handles.imgcurr,5.0);
+image = handles.imgcurr;
+image_temp = imfilter(imsubtract(image,25),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
+image = image_temp;
 imshow(image);
-handles.imgprev=image;
+handles.imgprev = image;
 guidata(hObject,handles);
-
-%high-pass filter
-function [output]=ideal_highpass_centered_freq(input,radius)
-%[output]=ideal_highpass_centered_frequency(input,radius)
-%input and output are fourier frequency components which have been centered for display
-height=size(input,1);
-width=size(input,2);
-distance=distance_from_center(height,width);
-
-filter=distance >= radius;
-output=input.*filter;
-
-%dist. from center
-function [distance]=distance_from_center(max_rows,max_columns)
-%[distance]=distance_from_center(max_rows,max_columns)
-%creates a 2-dimensional array of size max_rows by max_columns 
-%whose elements are the euclidean distances from the center coordinates.
-distance=zeros(max_rows,max_columns);
-center_row=fix(max_rows/2+.5);
-center_column=fix(max_columns/2+.5);
-
-for row=1:max_rows
-   for column=1:max_columns
-      distance(row,column)=sqrt((row-center_row).^2+(column-center_column).^2);
-   end
-end
 
 function edit_boostCoeff_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_boostCoeff (see GCBO)
@@ -200,8 +176,14 @@ function pushbutton_highBoost_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 axes(handles.axes_preview);
+
+coeff = get(handles.edit_boostCoeff,'String');
+coeff = str2double(coeff);
+
 image = handles.imgcurr;
-image = imfilter(imsubtract(image,25),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
+image_temp = imfilter(imsubtract(image,coeff),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
+image_final = imadd(image,image_temp);
+image = image_final;
 imshow(image);
 handles.imgprev = image;
 guidata(hObject,handles);
@@ -217,7 +199,8 @@ imshow(image);
 handles.imgprev=image;
 guidata(hObject,handles);
 
-% Shit below ain't workin' ; gotta adjust it for color images.
+% Isn't working for color images. Though really, I'm not sure what you'd want 
+% to equallize in a color image.
 % Protip: It _does_ work for grayscale images.
 
 function [g]=histequalize(f)
