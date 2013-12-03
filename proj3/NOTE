@@ -1,0 +1,9 @@
+for color stuff in freq:
+
+img-rgb -> img-YCbCr ; 
+do filter stuff to brightness part (Y) ; 
+Z=fft(Y);
+H=filter(Y);
+freq-dom-filtered-img=Z.*H;
+final-image-as-YCbCr = ifft(freq-dom-filtered-img);
+final-image-as-YCbCr -> final-image-as-rgb;
