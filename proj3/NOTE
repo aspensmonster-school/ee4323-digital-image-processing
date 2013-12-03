@@ -7,3 +7,9 @@ H=filter(Y);
 freq-dom-filtered-img=Z.*H;
 final-image-as-YCbCr = ifft(freq-dom-filtered-img);
 final-image-as-YCbCr -> final-image-as-rgb;
+
+Useful guide:
+
+http://www.cs.uregina.ca/Links/class-info/425-nova/Lab5/
+
+(Also see TRACS for sample code)
