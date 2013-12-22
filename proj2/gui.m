@@ -203,36 +203,6 @@ guidata(hObject,handles);
 % to equallize in a color image.
 % Protip: It _does_ work for grayscale images.
 
-function [g]=histequalize(f)
-h=histogram(f);
-[height,width]=size(f);
-newcolors=zeros(1,256);
-for k=1:256
-    for j=1:k
-        newcolors(k)=newcolors(k)+h(j);
-    end
-end
-newcolors=255*newcolors/(height*width);
-newcolors=uint8(newcolors);
-g=zeros(height,width);
-for r=1:height
-    for c=1:width
-        oldcolor=double(f(r,c));
-        g(r,c)=newcolors(oldcolor+1);
-    end
-end
-g=uint8(g);
-
-function [h]=histogram(f);
- [xmax,ymax]=size(f);
- h=zeros(1,256);
- for x=1:xmax
-    for y=1:ymax
-        color=double(f(x,y));
-        h(color+1)=h(color+1)+1;
-    end;
- end;
-
 function edit_brightness_step_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_brightness_step (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
