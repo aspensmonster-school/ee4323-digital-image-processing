@@ -118,21 +118,7 @@ neighboorhood = get(get(handles.uipanel_lowPassNeighboorhood,'SelectedObject'),'
 image = smooth_n(handles.imgcurr,neighboorhood);
 imshow(image);
 handles.imgprev=image;
-%imshow(smooth_n(handles.imgcurr,9));
 guidata(hObject, handles);
-
-function [g]=smooth_n(f,n)
-[height width]=size(f);
-g=f;
-for row=1:height
-    for col=1:width
-        startrow=max(row-n,1);
-        endrow=min(row+n,height);
-        startcol=max(col-n,1);
-        endcol=min(col+n,width);
-        g(row,col)=mean(mean(f(startrow:endrow,startcol:endcol)));
-    end
-end
 
 % --- Executes on button press in pushbutton_highPass.
 function pushbutton_highPass_Callback(hObject, eventdata, handles)
