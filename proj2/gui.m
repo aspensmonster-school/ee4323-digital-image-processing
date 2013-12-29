@@ -114,7 +114,6 @@ axes(handles.axes_preview);
 
 %selected = get(handles.uipanel_lowPassNeighboorhood,'SelectedObject');
 neighboorhood = get(get(handles.uipanel_lowPassNeighboorhood,'SelectedObject'),'UserData');
-
 image = smooth_n(handles.imgcurr,neighboorhood);
 imshow(image);
 handles.imgprev=image;
@@ -125,11 +124,12 @@ function pushbutton_highPass_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton_highPass (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
 axes(handles.axes_preview);
 image = handles.imgcurr;
-image_temp = imfilter(imsubtract(image,25),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
-image = image_temp;
+image = sharpen_n(handles.imgcurr,5);
+%image_temp = imfilter(imsubtract(image,25),[-1 -1 -1;-1 8 -1;-1 -1 -1]);
+%image = image_temp;
+
 imshow(image);
 handles.imgprev = image;
 guidata(hObject,handles);
